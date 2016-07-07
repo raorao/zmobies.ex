@@ -66,8 +66,8 @@ defimpl String.Chars, for: Zmobies.World do
     )
 
     case maybe_being do
-      %Zmobies.Being{} -> 'X'
-      _ -> 'O'
+      %Zmobies.Being{} -> "#{IO.ANSI.red()}X"
+      _ -> "#{IO.ANSI.cyan()}O"
     end
   end
 end
