@@ -8,15 +8,23 @@ defmodule Zmobies.World do
   end
 
   def add(world,being) do
+    %{
+      right_boundary: right_boundary,
+      bottom_boundary: bottom_boundary,
+      beings: beings
+    } = world
+
     cond do
       being.col_index < 1 ->
         {:error, "#{being} is out of bounds to the left"}
-      being.col_index > world.right_boundary ->
+      being.col_index > right_boundary ->
         {:error, "#{being} is out of bounds to the right"}
       being.row_index < 1 ->
         {:error, "#{being} is out of bounds to the north"}
-      being.row_index > world.bottom_boundary ->
+      being.row_index > bottom_boundary ->
         {:error, "#{being} is out of bounds to the south"}
+      Enum.any?(beings, Zmobies.Being.on_top_of?(being)) ->
+        {:error, "#{being} is trying to place on an occupied space."}
       true ->
         new_world = %{world | beings: world.beings ++ [being]}
         {:ok, new_world}
