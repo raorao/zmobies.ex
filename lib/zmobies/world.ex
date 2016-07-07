@@ -22,6 +22,17 @@ defmodule Zmobies.World do
         {:ok, new_world}
     end
   end
+
+  def add(world) do
+    %{right_boundary: right_boundary, bottom_boundary: bottom_boundary} = world
+
+    being = Zmobies.Being.new(
+      col: :random.uniform(right_boundary),
+      row: :random.uniform(bottom_boundary)
+    )
+
+    add(world, being)
+  end
 end
 
 defimpl String.Chars, for: Zmobies.World do
