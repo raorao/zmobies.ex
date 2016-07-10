@@ -45,6 +45,8 @@ defmodule Zmobies.World do
         {:ok, being_pid} = BeingProcess.start({self,being})
         {:ok, map, being} = Map.update_being(map, %{ being | pid: being_pid })
         {:noreply, map}
+      {:collision, _, _} ->
+        {:noreply, current_map}
       {:error, _} ->
         {:noreply, current_map}
     end
@@ -54,6 +56,23 @@ defmodule Zmobies.World do
     case Map.move(current_map, old_being, new_being) do
       {:ok, new_map, _} ->
         {:reply, {:ok, new_being}, new_map}
+      {:collision, being, other} ->
+        cond do
+          being.type == other.type ->
+            {:reply, {:error, "collision"}, current_map}
+
+          being.type == :human ->
+            {:ok, new_map, _} = Map.update_being(current_map, %{ being | type: :zombie })
+            BeingProcess.update(being.pid, :zombie)
+
+            {:reply, {:error, "collision"}, new_map}
+
+          other.type == :human ->
+            {:ok, new_map, _} = Map.update_being(current_map, %{ other | type: :zombie })
+            BeingProcess.update(other.pid, :zombie)
+
+            {:reply, {:error, "collision"}, new_map}
+        end
       {:error, message} ->
         {:reply, {:error, message}, current_map}
     end

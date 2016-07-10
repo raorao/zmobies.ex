@@ -31,6 +31,8 @@ defmodule Zmobies.Map do
       beings: beings
     } = map
 
+    collision = Enum.find(beings, Being.same_location?(being))
+
     cond do
       being.col_index < 1 ->
         {:error, "#{being} is out of bounds to the left"}
@@ -40,8 +42,8 @@ defmodule Zmobies.Map do
         {:error, "#{being} is out of bounds to the north"}
       being.row_index > bottom_boundary ->
         {:error, "#{being} is out of bounds to the south"}
-      Enum.any?(beings, Being.same_location?(being)) ->
-        {:error, "#{being} is trying to place on an occupied space."}
+      collision != nil ->
+        {:collision, being, collision}
       true ->
         new_map = %{map | beings: map.beings ++ [being]}
         {:ok, new_map, being}

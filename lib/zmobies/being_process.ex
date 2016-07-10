@@ -13,6 +13,10 @@ defmodule Zmobies.BeingProcess do
     GenServer.call(pid, {:read})
   end
 
+  def update(pid, type) do
+    GenServer.cast(pid, {:update, type})
+  end
+
   def setup(being) do
     :random.seed(:os.timestamp())
     alteration = :random.uniform(500) - 250
@@ -46,6 +50,11 @@ defmodule Zmobies.BeingProcess do
     end
 
     {:noreply, {world_pid, being}}
+  end
+
+  def handle_cast({:update, type}, {world_pid, being}) do
+    new_being = %{being | type: type}
+    {:noreply, {world_pid, new_being}}
   end
 
   def handle_call({:read}, _, state) do
