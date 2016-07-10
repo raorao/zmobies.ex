@@ -12,10 +12,6 @@ defmodule Zmobies.Interface do
     pid
   end
 
-  def stop do
-    stop(GenServer.whereis(:interface))
-  end
-
   def stop(pid) do
     GenServer.stop(pid)
   end
@@ -25,7 +21,7 @@ defmodule Zmobies.Interface do
   end
 
   def start(humans: humans, zombies: zombies, dimensions: dimensions) do
-    GenServer.start(Interface, {humans, zombies, dimensions}, name: :interface)
+    GenServer.start(Interface, {humans, zombies, dimensions})
   end
 
   def read(pid) do
