@@ -13,8 +13,12 @@ defmodule Zmobies.BeingProcess do
     GenServer.call(pid, {:read})
   end
 
-  def update(pid, type) do
-    GenServer.cast(pid, {:update, type})
+  def feed(pid) do
+    GenServer.cast(pid, {:feed})
+  end
+
+  def turn(pid) do
+    GenServer.cast(pid, {:turn})
   end
 
   def stop(pid) do
@@ -68,8 +72,12 @@ defmodule Zmobies.BeingProcess do
     {:noreply, {world_pid, nil, nil, nil}}
   end
 
-  def handle_cast({:update, type}, {world_pid, being, tref, _}) do
-    new_being = %{being | type: type}
+  def handle_cast({:feed}, {world_pid, being, tref, _}) do
+    {:noreply, {world_pid, being, tref, 0}}
+  end
+
+  def handle_cast({:turn}, {world_pid, being, tref, _}) do
+    new_being = %{being | type: :zombie}
     :timer.cancel(tref)
     new_tref = setup(new_being)
     {:noreply, {world_pid, new_being, new_tref, 0}}

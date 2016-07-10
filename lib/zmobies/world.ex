@@ -76,13 +76,15 @@ defmodule Zmobies.World do
 
           being.type == :human ->
             {:ok, new_map, _} = Map.update_being(current_map, %{ being | type: :zombie })
-            BeingProcess.update(being.pid, :zombie)
+            BeingProcess.feed(other.pid)
+            BeingProcess.turn(being.pid)
 
             {:reply, {:error, "collision"}, new_map}
 
           other.type == :human ->
             {:ok, new_map, _} = Map.update_being(current_map, %{ other | type: :zombie })
-            BeingProcess.update(other.pid, :zombie)
+            BeingProcess.feed(being.pid)
+            BeingProcess.turn(other.pid)
 
             {:reply, {:error, "collision"}, new_map}
         end
