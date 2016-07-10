@@ -33,10 +33,14 @@ defmodule Zmobies.BeingProcess do
   def init({world_pid, being}) do
     being_with_process = %{being | pid: self}
     tref = BeingProcess.setup(being_with_process)
-    {:ok, {world_pid, being_with_process, tref}}
+    {:ok, {world_pid, being_with_process, tref, 0}}
   end
 
-  def handle_info(:move, {world_pid, old_being, tref}) do
+  def handle_info(:move, {world_pid, old_being, tref, lifetime}) do
+
+    if Being.starved?(old_being, lifetime) do
+      BeingProcess.stop(old_being.pid)
+    end
 
     new_being = case World.find_nearest_enemy(world_pid, old_being) do
       {:ok, enemy} ->
@@ -54,21 +58,21 @@ defmodule Zmobies.BeingProcess do
       {:error, _} -> old_being
     end
 
-    {:noreply, {world_pid, being, tref}}
+    {:noreply, {world_pid, being, tref, lifetime + 1}}
   end
 
-  def handle_cast({:stop}, {world_pid, being, tref}) do
+  def handle_cast({:stop}, {world_pid, being, tref, _}) do
     :timer.cancel(tref)
     Zmobies.World.remove(world_pid, being)
     GenServer.stop(being.pid)
-    {:noreply, {world_pid, nil, nil}}
+    {:noreply, {world_pid, nil, nil, nil}}
   end
 
-  def handle_cast({:update, type}, {world_pid, being, tref}) do
+  def handle_cast({:update, type}, {world_pid, being, tref, lifetime}) do
     new_being = %{being | type: type}
     :timer.cancel(tref)
     new_tref = setup(new_being)
-    {:noreply, {world_pid, new_being, new_tref}}
+    {:noreply, {world_pid, new_being, new_tref, lifetime}}
   end
 
   def handle_call({:read}, _, state) do

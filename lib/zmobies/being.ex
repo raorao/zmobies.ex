@@ -72,6 +72,13 @@ defmodule Zmobies.Being do
     sight_distance(being) >= distance_from(being, other)
   end
 
+  def starved?(%Zmobies.Being{type: type}, lifetime) do
+    case type do
+      :zombie -> lifetime > 40
+      :human -> false
+    end
+  end
+
   def sight_distance(%Zmobies.Being{type: type}) do
     case type do
       :zombie -> 3
