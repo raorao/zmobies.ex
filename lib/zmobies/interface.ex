@@ -6,7 +6,7 @@ defmodule Zmobies.Interface do
 
   def setup do
     {:ok, pid} = World.start
-    World.add_human(pid)
+    Enum.each((1..3), fn (_) -> World.add_human(pid) end)
     Enum.each((1..10), fn (_) -> World.add_zombie(pid) end)
     :timer.send_interval(200, :print)
     pid
