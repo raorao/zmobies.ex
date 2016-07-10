@@ -29,7 +29,7 @@ defmodule Zmobies.World do
   end
 
   def move(pid, old_being, new_being) do
-    GenServer.cast(pid, {:move, old_being, new_being})
+    GenServer.call(pid, {:move, old_being, new_being})
   end
 
   def read(pid) do
@@ -51,10 +51,14 @@ defmodule Zmobies.World do
     end
   end
 
-  def handle_cast({:move, old_being, new_being}, current_map) do
+  def handle_call({:move, old_being, new_being}, _, current_map) do
     case Map.move(current_map, old_being, new_being) do
-      {:ok, new_map, _} -> {:noreply, new_map}
-      {:error, _} -> {:noreply, current_map}
+      {:ok, new_map, _} ->
+        IO.puts("\n")
+        IO.puts(new_map)
+        {:reply, {:ok, new_being}, new_map}
+      {:error, message} ->
+        {:reply, {:error, message}, current_map}
     end
   end
 
