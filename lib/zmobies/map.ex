@@ -20,12 +20,8 @@ defmodule Zmobies.Map do
   end
 
   def remove(map, being) do
-    if Enum.any?(map.beings, Being.same_location?(being)) do
-      new_map = %{map | beings: List.delete(map.beings, being)}
-      {:ok, new_map}
-    else
-      {:error, "Could not find being #{being}"}
-    end
+    new_map = %{map | beings: Enum.reject(map.beings, Being.same_location?(being))}
+    {:ok, new_map}
   end
 
   def add(map,being) do
@@ -67,6 +63,10 @@ defmodule Zmobies.Map do
   def add_zombie(map), do: add_random(map, :zombie)
   def add_human(map), do: add_random(map, :human)
 
+  def update_being(map, being) do
+    {:ok, map_with_removal} = remove(map, being)
+    add(map_with_removal, being)
+  end
 end
 
 defimpl String.Chars, for: Zmobies.Map do

@@ -26,10 +26,12 @@ defmodule Zmobies.Interface do
     {:ok, world}
   end
 
-  def handle_info(:print, world) do
+  def handle_info(:print, world_pid) do
     IO.puts(IO.ANSI.clear())
-    IO.puts(World.read(world))
-    {:noreply, world}
+    world = World.read(world_pid)
+    IO.inspect(world)
+    IO.puts(world)
+    {:noreply, world_pid}
   end
 
   def handle_call({:read}, _, world) do

@@ -22,8 +22,9 @@ defmodule Zmobies.BeingProcess do
 
   # necessary for GenServer
   def init({world_pid, being}) do
-    BeingProcess.setup(being)
-    {:ok, {world_pid, being}}
+    being_with_process = %{being | pid: self}
+    BeingProcess.setup(being_with_process)
+    {:ok, {world_pid, being_with_process}}
   end
 
   def handle_info(:move, {world_pid, old_being}) do

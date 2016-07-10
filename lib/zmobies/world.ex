@@ -42,7 +42,8 @@ defmodule Zmobies.World do
 
     case add do
       {:ok, map, being} ->
-        BeingProcess.start({self,being})
+        {:ok, being_pid} = BeingProcess.start({self,being})
+        {:ok, map, being} = Map.update_being(map, %{ being | pid: being_pid })
         {:noreply, map}
       {:error, _} ->
         {:noreply, current_map}
