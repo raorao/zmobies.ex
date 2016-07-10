@@ -25,6 +25,10 @@ defmodule Zmobies.World do
     GenServer.call(pid, {:find_nearest_enemy, being})
   end
 
+  def remove(pid, being) do
+    GenServer.cast(pid, {:remove, being})
+  end
+
   def read(pid) do
     GenServer.call(pid, {:read})
   end
@@ -97,6 +101,10 @@ defmodule Zmobies.World do
     {:reply, reply, current_map }
   end
 
+  def handle_cast({:remove, being}, current_map) do
+    {:ok, new_map} = Map.remove(current_map, being)
+    {:noreply, new_map}
+  end
 
   def handle_call({:read}, _, map) do
     {:reply, map, map}
