@@ -96,7 +96,7 @@ defimpl String.Chars, for: Zmobies.Map do
     case maybe_being do
       %{type: :zombie} -> "#{IO.ANSI.red()}Z"
       %{type: :human} -> "#{IO.ANSI.yellow()}H"
-      _ -> "#{IO.ANSI.cyan()}O"
+      _ -> " "
     end
   end
 end
