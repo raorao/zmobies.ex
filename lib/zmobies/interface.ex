@@ -8,7 +8,7 @@ defmodule Zmobies.Interface do
     {:ok, pid} = World.start(dimensions)
     Enum.each((1..humans),  fn (_) -> World.add_human(pid)  end)
     Enum.each((1..zombies), fn (_) -> World.add_zombie(pid) end)
-    :timer.send_interval(200, :print)
+    :timer.send_interval(100, :print)
     pid
   end
 
