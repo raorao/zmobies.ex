@@ -15,6 +15,7 @@ defmodule Zmobies.Zombie do
 
   # necessary for GenServer
   def init({world_pid, being}) do
+    :random.seed(:os.timestamp())
     :timer.send_interval(1000, :move_randomly)
     {:ok, {world_pid, being}}
   end
