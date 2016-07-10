@@ -21,6 +21,14 @@ defmodule Zmobies.Being do
   def same_location?(being) do
     fn(other) -> being.col_index == other.col_index && being.row_index == other.row_index end
   end
+
+  def base_speed(%Zmobies.Being{type: type}) do
+    # in milliseconds.
+    case type do
+      :zombie -> 1000
+      :human -> 500
+    end
+  end
 end
 
 defimpl String.Chars, for: Zmobies.Being do

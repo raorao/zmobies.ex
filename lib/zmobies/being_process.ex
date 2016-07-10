@@ -13,16 +13,16 @@ defmodule Zmobies.BeingProcess do
     GenServer.call(pid, {:read})
   end
 
-  def setup do
+  def setup(being) do
     :random.seed(:os.timestamp())
     alteration = :random.uniform(500) - 250
-    interval = 1000 + alteration
+    interval = Being.base_speed(being) + alteration
     :timer.send_interval(interval, :move_randomly)
   end
 
   # necessary for GenServer
   def init({world_pid, being}) do
-    BeingProcess.setup()
+    BeingProcess.setup(being)
     {:ok, {world_pid, being}}
   end
 
