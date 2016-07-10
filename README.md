@@ -1,20 +1,19 @@
 # Zmobies
 
-**TODO: Add description**
+Zombie simulator in Elixir.
 
-## Installation
+## Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+require Elixir/IEx 1.2.3
 
-  1. Add zmobies to your list of dependencies in `mix.exs`:
+to lauch IEx, run:
+```sh
+$ iex -S mix
+```
 
-        def deps do
-          [{:zmobies, "~> 0.0.1"}]
-        end
+To start, run:
+```ex
+Zmobies.Interface.start(humans: 150, zombies: 10, dimensions: 20)
+```
 
-  2. Ensure zmobies is started before your application:
-
-        def application do
-          [applications: [:zmobies]]
-        end
-
+Environmental settings can be adjusted.
