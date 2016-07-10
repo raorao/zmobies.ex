@@ -3,10 +3,27 @@ defmodule Zmobies.World do
   alias Zmobies.Zombie, as: Zombie
   use GenServer
 
-  def start do
-    GenServer.start(Zmobies.World, nil)
+  # iex testing interface
+  def test do
+    {:ok, pid} = Zmobies.World.start
+    Enum.each((1..10), fn (_) -> Zmobies.World.add(pid) end)
+    IO.puts(Zmobies.World.read(pid))
+    Zmobies.World.fetch
   end
 
+  def stop do
+    GenServer.stop(Zmobies.World.fetch)
+  end
+
+  def fetch do
+    GenServer.whereis(:map)
+  end
+
+  def start do
+    GenServer.start(Zmobies.World, nil, name: :map)
+  end
+
+  # the real stuff!
   def add(pid) do
     GenServer.cast(pid, {:add})
   end
