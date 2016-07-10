@@ -8,7 +8,7 @@ defmodule Zmobies.Interface do
     {:ok, pid} = World.start(dimensions)
     Enum.each((1..humans),  fn (_) -> World.add_human(pid)  end)
     Enum.each((1..zombies), fn (_) -> World.add_zombie(pid) end)
-    :timer.send_interval(100, :print)
+    :timer.send_interval(75, :print)
     pid
   end
 
@@ -35,7 +35,7 @@ defmodule Zmobies.Interface do
   end
 
   def handle_info(:print, world_pid) do
-    IO.puts(IO.ANSI.clear())
+    # IO.puts(IO.ANSI.clear())
     world = World.read(world_pid)
 
     IO.puts(world)

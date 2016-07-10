@@ -101,8 +101,8 @@ defmodule Zmobies.Being do
   def base_speed(%Zmobies.Being{type: type}) do
     # in milliseconds.
     case type do
-      :zombie -> 1000
-      :human -> 500
+      :zombie -> 300
+      :human -> 200
     end
   end
 end

@@ -27,7 +27,7 @@ defmodule Zmobies.BeingProcess do
 
   def setup(being) do
     :random.seed(:os.timestamp())
-    alteration = :random.uniform(500) - 250
+    alteration = :random.uniform(200) - 100
     interval = Being.base_speed(being) + alteration
     {:ok, tref} = :timer.send_interval(interval, :move)
     tref
