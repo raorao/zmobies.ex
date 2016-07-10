@@ -64,10 +64,14 @@ defmodule Zmobies.World do
       |> Enum.reject(Being.same_type?(being))
 
     reply = if Enum.empty?(enemies) do
-      {:error, "could not find any enemies"}
+      {:error, "#{being} is alone on the map"}
     else
       enemy = Enum.min_by(enemies, Being.distance_from(being))
-      {:ok, enemy}
+      if Being.can_see?(being, enemy) do
+        {:ok, enemy}
+      else
+        {:error, "no beings nearby."}
+      end
     end
 
     {:reply, reply, current_map }

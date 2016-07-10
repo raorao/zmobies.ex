@@ -48,12 +48,27 @@ defmodule Zmobies.Being do
     fn(other) -> being.type == other.type end
   end
 
+  def can_see?(being, other) do
+    sight_distance(being) >= distance_from(being, other)
+  end
+
+  def sight_distance(%Zmobies.Being{type: type}) do
+    case type do
+      :zombie -> 3
+      :human -> 5
+    end
+  end
+
   def distance_from(being) do
     fn(other) ->
       col_diff = abs(being.col_index - other.col_index)
       row_diff = abs(being.row_index - other.row_index)
       col_diff + row_diff
     end
+  end
+
+  def distance_from(being, other) do
+    distance_from(being).(other)
   end
 
   def base_speed(%Zmobies.Being{type: type}) do
