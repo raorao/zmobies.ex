@@ -1,8 +1,9 @@
 defmodule Zmobies.Being do
+  alias Zmobies.Being, as: Being
   defstruct row_index: nil, col_index: nil
 
   def new(col: col_index, row: row_index) do
-    %Zmobies.Being{col_index: col_index, row_index: row_index}
+    %Being{col_index: col_index, row_index: row_index}
   end
 
   def on_top_of?(being) do

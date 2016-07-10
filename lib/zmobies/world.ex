@@ -1,4 +1,5 @@
 defmodule Zmobies.World do
+  alias Zmobies.Map, as: Map
   use GenServer
 
   def start do
@@ -15,11 +16,11 @@ defmodule Zmobies.World do
 
   # necessary for GenServer
   def init(_) do
-    {:ok, Zmobies.Map.new}
+    {:ok, Map.new}
   end
 
   def handle_cast({:add}, current_map) do
-    new_map = case Zmobies.Map.add(current_map) do
+    new_map = case Map.add(current_map) do
       {:ok, map} -> map
       {:error, _} -> current_map
     end

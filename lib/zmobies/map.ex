@@ -1,10 +1,13 @@
 defmodule Zmobies.Map do
+  alias Zmobies.Map, as: Map
+  alias Zmobies.Being, as: Being
+
   defstruct bottom_boundary: 10, right_boundary: 10, beings: []
 
-  def new, do: %Zmobies.Map{}
+  def new, do: %Map{}
 
   def new(bottom_boundary, right_boundary) do
-    %Zmobies.Map{bottom_boundary: bottom_boundary, right_boundary: right_boundary}
+    %Map{bottom_boundary: bottom_boundary, right_boundary: right_boundary}
   end
 
   def add(map,being) do
@@ -23,7 +26,7 @@ defmodule Zmobies.Map do
         {:error, "#{being} is out of bounds to the north"}
       being.row_index > bottom_boundary ->
         {:error, "#{being} is out of bounds to the south"}
-      Enum.any?(beings, Zmobies.Being.on_top_of?(being)) ->
+      Enum.any?(beings, Being.on_top_of?(being)) ->
         {:error, "#{being} is trying to place on an occupied space."}
       true ->
         new_map = %{map | beings: map.beings ++ [being]}
@@ -34,7 +37,7 @@ defmodule Zmobies.Map do
   def add(map) do
     %{right_boundary: right_boundary, bottom_boundary: bottom_boundary} = map
 
-    being = Zmobies.Being.new(
+    being = Being.new(
       col: :random.uniform(right_boundary),
       row: :random.uniform(bottom_boundary)
     )
