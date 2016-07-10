@@ -13,7 +13,11 @@ defmodule Zmobies.Interface do
   end
 
   def stop do
-    GenServer.stop(GenServer.whereis(:interface))
+    stop(GenServer.whereis(:interface))
+  end
+
+  def stop(pid) do
+    GenServer.stop(pid)
   end
 
   def start do
@@ -37,8 +41,15 @@ defmodule Zmobies.Interface do
   def handle_info(:print, world_pid) do
     IO.puts(IO.ANSI.clear())
     world = World.read(world_pid)
+
     IO.puts(world)
     IO.puts("\n")
+
+    if World.stable?(world) do
+      IO.puts("world is stable. The #{World.winner(world)} have won.")
+      Interface.stop(self)
+    end
+
     {:noreply, world_pid}
   end
 

@@ -69,6 +69,21 @@ defmodule Zmobies.Map do
     {:ok, map_with_removal} = remove(map, being)
     add(map_with_removal, being)
   end
+
+  def stable?(map) do
+    available_types = map.beings
+      |> Enum.map(fn(being) -> being.type end)
+      |> Enum.uniq
+
+    length(available_types) == 1
+  end
+
+  def winner(map) do
+    case List.first(map.beings).type do
+      :zombie -> "zombies"
+      :human -> "humans"
+    end
+  end
 end
 
 defimpl String.Chars, for: Zmobies.Map do

@@ -33,6 +33,10 @@ defmodule Zmobies.World do
     GenServer.call(pid, {:read})
   end
 
+  def stable?(map), do: Map.stable?(map)
+  def winner(map), do: Map.winner(map)
+
+
   # necessary for GenServer
   def init(dimensions) do
     {:ok, Map.new(dimensions, dimensions)}
@@ -54,6 +58,11 @@ defmodule Zmobies.World do
       {:error, _} ->
         {:noreply, current_map}
     end
+  end
+
+  def handle_cast({:remove, being}, current_map) do
+    {:ok, new_map} = Map.remove(current_map, being)
+    {:noreply, new_map}
   end
 
   def handle_call({:move, old_being, new_being}, _, current_map) do
@@ -99,11 +108,6 @@ defmodule Zmobies.World do
     end
 
     {:reply, reply, current_map }
-  end
-
-  def handle_cast({:remove, being}, current_map) do
-    {:ok, new_map} = Map.remove(current_map, being)
-    {:noreply, new_map}
   end
 
   def handle_call({:read}, _, map) do
