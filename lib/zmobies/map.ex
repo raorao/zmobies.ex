@@ -52,16 +52,21 @@ defmodule Zmobies.Map do
     end
   end
 
-  def add(map) do
+  def add_random(map, type) do
     %{right_boundary: right_boundary, bottom_boundary: bottom_boundary} = map
 
     being = Being.new(
       col: :random.uniform(right_boundary),
-      row: :random.uniform(bottom_boundary)
+      row: :random.uniform(bottom_boundary),
+      type: type
     )
 
     add(map, being)
   end
+
+  def add_zombie(map), do: add_random(map, :zombie)
+  def add_human(map), do: add_random(map, :human)
+
 end
 
 defimpl String.Chars, for: Zmobies.Map do
@@ -87,7 +92,8 @@ defimpl String.Chars, for: Zmobies.Map do
     )
 
     case maybe_being do
-      %Zmobies.Being{} -> "#{IO.ANSI.red()}Z"
+      %{type: :zombie} -> "#{IO.ANSI.red()}Z"
+      %{type: :human} -> "#{IO.ANSI.yellow()}H"
       _ -> "#{IO.ANSI.cyan()}O"
     end
   end

@@ -1,12 +1,12 @@
-defmodule Zmobies.Zombie do
-  alias Zmobies.Zombie, as: Zombie
+defmodule Zmobies.BeingProcess do
+  alias Zmobies.BeingProcess, as: BeingProcess
   alias Zmobies.World, as: World
   alias Zmobies.Being, as: Being
 
   use GenServer
 
   def start({world_pid, being}) do
-    GenServer.start(Zombie, {world_pid, being})
+    GenServer.start(BeingProcess, {world_pid, being})
   end
 
   def read(pid) do
@@ -22,7 +22,7 @@ defmodule Zmobies.Zombie do
 
   # necessary for GenServer
   def init({world_pid, being}) do
-    Zombie.setup()
+    BeingProcess.setup()
     {:ok, {world_pid, being}}
   end
 
