@@ -68,11 +68,11 @@ defmodule Zmobies.BeingProcess do
     {:noreply, {world_pid, nil, nil, nil}}
   end
 
-  def handle_cast({:update, type}, {world_pid, being, tref, lifetime}) do
+  def handle_cast({:update, type}, {world_pid, being, tref, _}) do
     new_being = %{being | type: type}
     :timer.cancel(tref)
     new_tref = setup(new_being)
-    {:noreply, {world_pid, new_being, new_tref, lifetime}}
+    {:noreply, {world_pid, new_being, new_tref, 0}}
   end
 
   def handle_call({:read}, _, state) do
