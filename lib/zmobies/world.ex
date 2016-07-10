@@ -3,27 +3,10 @@ defmodule Zmobies.World do
   alias Zmobies.Zombie, as: Zombie
   use GenServer
 
-  # iex testing interface
-  def test do
-    {:ok, pid} = Zmobies.World.start
-    Enum.each((1..10), fn (_) -> Zmobies.World.add(pid) end)
-    IO.puts(Zmobies.World.read(pid))
-    Zmobies.World.fetch
-  end
-
-  def stop do
-    GenServer.stop(Zmobies.World.fetch)
-  end
-
-  def fetch do
-    GenServer.whereis(:map)
-  end
-
   def start do
-    GenServer.start(Zmobies.World, nil, name: :map)
+    GenServer.start(Zmobies.World, nil)
   end
 
-  # the real stuff!
   def add(pid) do
     GenServer.cast(pid, {:add})
   end
@@ -54,8 +37,6 @@ defmodule Zmobies.World do
   def handle_call({:move, old_being, new_being}, _, current_map) do
     case Map.move(current_map, old_being, new_being) do
       {:ok, new_map, _} ->
-        IO.puts("\n")
-        IO.puts(new_map)
         {:reply, {:ok, new_being}, new_map}
       {:error, message} ->
         {:reply, {:error, message}, current_map}
