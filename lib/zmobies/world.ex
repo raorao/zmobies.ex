@@ -1,5 +1,6 @@
 defmodule Zmobies.World do
   alias Zmobies.Map, as: Map
+  alias Zmobies.Zombie, as: Zombie
   use GenServer
 
   def start do
@@ -24,10 +25,14 @@ defmodule Zmobies.World do
   end
 
   def handle_cast({:add}, current_map) do
-    new_map = case Map.add(current_map) do
-      {:ok, map} -> map
-      {:error, _} -> current_map
+    case Map.add(current_map) do
+      {:ok, map, being} ->
+        Zombie.start({self,being})
+        {:noreply, map}
+      {:error, _} ->
+        {:noreply, current_map}
     end
+  end
 
   def handle_cast({:move, old_being, new_being}, current_map) do
     case Map.move(current_map, old_being, new_being) do
