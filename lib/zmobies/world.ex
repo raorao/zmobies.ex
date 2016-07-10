@@ -5,8 +5,8 @@ defmodule Zmobies.World do
   alias Zmobies.BeingProcess, as: BeingProcess
   use GenServer
 
-  def start do
-    GenServer.start(Zmobies.World, nil)
+  def start(dimensions) do
+    GenServer.start(Zmobies.World, dimensions)
   end
 
   def add_zombie(pid) do
@@ -30,8 +30,8 @@ defmodule Zmobies.World do
   end
 
   # necessary for GenServer
-  def init(_) do
-    {:ok, Map.new}
+  def init(dimensions) do
+    {:ok, Map.new(dimensions, dimensions)}
   end
 
   def handle_cast({:add, type}, current_map) do

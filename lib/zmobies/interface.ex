@@ -4,8 +4,8 @@ defmodule Zmobies.Interface do
 
   use GenServer
 
-  def setup({humans, zombies}) do
-    {:ok, pid} = World.start
+  def setup({humans, zombies, dimensions}) do
+    {:ok, pid} = World.start(dimensions)
     Enum.each((1..humans),  fn (_) -> World.add_human(pid)  end)
     Enum.each((1..zombies), fn (_) -> World.add_zombie(pid) end)
     :timer.send_interval(200, :print)
@@ -17,11 +17,11 @@ defmodule Zmobies.Interface do
   end
 
   def start do
-    start(humans: 3, zombies: 10)
+    start(humans: 3, zombies: 10, dimensions: 10)
   end
 
-  def start(humans: humans, zombies: zombies) do
-    GenServer.start(Interface, {humans, zombies}, name: :interface)
+  def start(humans: humans, zombies: zombies, dimensions: dimensions) do
+    GenServer.start(Interface, {humans, zombies, dimensions}, name: :interface)
   end
 
   def read(pid) do
@@ -29,8 +29,8 @@ defmodule Zmobies.Interface do
   end
 
   # necessary for GenServer
-  def init({humans, zombies}) do
-    world = Interface.setup({humans, zombies})
+  def init({humans, zombies, dimensions}) do
+    world = Interface.setup({humans, zombies, dimensions})
     {:ok, world}
   end
 
