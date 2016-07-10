@@ -13,10 +13,16 @@ defmodule Zmobies.Zombie do
     GenServer.call(pid, {:read})
   end
 
+  def setup do
+    :random.seed(:os.timestamp())
+    alteration = :random.uniform(500) - 250
+    interval = 1000 + alteration
+    :timer.send_interval(interval, :move_randomly)
+  end
+
   # necessary for GenServer
   def init({world_pid, being}) do
-    :random.seed(:os.timestamp())
-    :timer.send_interval(1000, :move_randomly)
+    Zombie.setup()
     {:ok, {world_pid, being}}
   end
 

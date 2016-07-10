@@ -7,7 +7,7 @@ defmodule Zmobies.Interface do
   def setup do
     {:ok, pid} = World.start
     Enum.each((1..10), fn (_) -> World.add(pid) end)
-    :timer.send_interval(500, :print)
+    :timer.send_interval(200, :print)
     pid
   end
 
