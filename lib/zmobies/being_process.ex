@@ -17,7 +17,7 @@ defmodule Zmobies.BeingProcess do
     :random.seed(:os.timestamp())
     alteration = :random.uniform(500) - 250
     interval = Being.base_speed(being) + alteration
-    :timer.send_interval(interval, :move_randomly)
+    :timer.send_interval(interval, :move)
   end
 
   # necessary for GenServer
@@ -26,8 +26,18 @@ defmodule Zmobies.BeingProcess do
     {:ok, {world_pid, being}}
   end
 
-  def handle_info(:move_randomly, {world_pid, old_being}) do
-    move = World.move(world_pid, old_being, Being.move_randomly(old_being))
+  def handle_info(:move, {world_pid, old_being}) do
+
+    new_being = case World.find_nearest_enemy(world_pid, old_being) do
+      {:ok, enemy} ->
+        case old_being.type do
+          :human  -> Being.move_away(old_being, enemy)
+          :zombie -> Being.move_towards(old_being, enemy)
+        end
+      {:error, _ } -> Being.move_randomly(old_being)
+    end
+
+    move = World.move(world_pid, old_being, new_being)
 
     being = case move do
       {:ok, new_being} -> new_being

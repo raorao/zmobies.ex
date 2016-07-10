@@ -14,12 +14,46 @@ defmodule Zmobies.Being do
 
     case :random.uniform(2) do
       1 -> %{being | row_index: being.row_index + alteration }
-      2 -> %{being | col_index: being.col_index + alteration  }
+      2 -> %{being | col_index: being.col_index + alteration }
+    end
+  end
+
+  def move_away(being, enemy) do
+    case :random.uniform(2) do
+      1 ->
+        alteration = if being.row_index > enemy.row_index, do: 1, else: -1
+        %{being | row_index: being.row_index + alteration }
+      2 ->
+        alteration = if being.col_index > enemy.col_index, do: 1, else: -1
+        %{being | col_index: being.col_index + alteration }
+    end
+  end
+
+  def move_towards(being, enemy) do
+    case :random.uniform(2) do
+      1 ->
+        alteration = if being.row_index > enemy.row_index, do: -1, else: 1
+        %{being | row_index: being.row_index + alteration }
+      2 ->
+        alteration = if being.col_index > enemy.col_index, do: -1, else: 1
+        %{being | col_index: being.col_index + alteration }
     end
   end
 
   def same_location?(being) do
     fn(other) -> being.col_index == other.col_index && being.row_index == other.row_index end
+  end
+
+  def same_type?(being) do
+    fn(other) -> being.type == other.type end
+  end
+
+  def distance_from(being) do
+    fn(other) ->
+      col_diff = abs(being.col_index - other.col_index)
+      row_diff = abs(being.row_index - other.row_index)
+      col_diff + row_diff
+    end
   end
 
   def base_speed(%Zmobies.Being{type: type}) do

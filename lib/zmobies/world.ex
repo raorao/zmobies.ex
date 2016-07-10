@@ -1,5 +1,7 @@
 defmodule Zmobies.World do
   alias Zmobies.Map, as: Map
+  alias Zmobies.Being, as: Being
+
   alias Zmobies.BeingProcess, as: BeingProcess
   use GenServer
 
@@ -17,6 +19,10 @@ defmodule Zmobies.World do
 
   def move(pid, old_being, new_being) do
     GenServer.call(pid, {:move, old_being, new_being})
+  end
+
+  def find_nearest_enemy(pid, being) do
+    GenServer.call(pid, {:find_nearest_enemy, being})
   end
 
   def read(pid) do
@@ -51,6 +57,22 @@ defmodule Zmobies.World do
         {:reply, {:error, message}, current_map}
     end
   end
+
+  def handle_call({:find_nearest_enemy, being}, _, current_map) do
+    enemies = current_map.beings
+      |> Enum.reject(Being.same_location?(being))
+      |> Enum.reject(Being.same_type?(being))
+
+    reply = if Enum.empty?(enemies) do
+      {:error, "could not find any enemies"}
+    else
+      enemy = Enum.min_by(enemies, Being.distance_from(being))
+      {:ok, enemy}
+    end
+
+    {:reply, reply, current_map }
+  end
+
 
   def handle_call({:read}, _, map) do
     {:reply, map, map}
