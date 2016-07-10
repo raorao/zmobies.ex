@@ -37,8 +37,8 @@ defmodule Zmobies.Interface do
   def handle_info(:print, world_pid) do
     IO.puts(IO.ANSI.clear())
     world = World.read(world_pid)
-    IO.inspect(world)
     IO.puts(world)
+    IO.puts("\n")
     {:noreply, world_pid}
   end
 
