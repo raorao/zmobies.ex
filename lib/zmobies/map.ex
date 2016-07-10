@@ -87,7 +87,7 @@ defimpl String.Chars, for: Zmobies.Map do
     )
 
     case maybe_being do
-      %Zmobies.Being{} -> "#{IO.ANSI.red()}X"
+      %Zmobies.Being{} -> "#{IO.ANSI.red()}Z"
       _ -> "#{IO.ANSI.cyan()}O"
     end
   end
