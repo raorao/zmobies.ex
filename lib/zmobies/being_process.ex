@@ -21,17 +21,18 @@ defmodule Zmobies.BeingProcess do
     :random.seed(:os.timestamp())
     alteration = :random.uniform(500) - 250
     interval = Being.base_speed(being) + alteration
-    :timer.send_interval(interval, :move)
+    {:ok, tref} = :timer.send_interval(interval, :move)
+    tref
   end
 
   # necessary for GenServer
   def init({world_pid, being}) do
     being_with_process = %{being | pid: self}
-    BeingProcess.setup(being_with_process)
-    {:ok, {world_pid, being_with_process}}
+    tref = BeingProcess.setup(being_with_process)
+    {:ok, {world_pid, being_with_process, tref}}
   end
 
-  def handle_info(:move, {world_pid, old_being}) do
+  def handle_info(:move, {world_pid, old_being, tref}) do
 
     new_being = case World.find_nearest_enemy(world_pid, old_being) do
       {:ok, enemy} ->
@@ -49,12 +50,14 @@ defmodule Zmobies.BeingProcess do
       {:error, _} -> old_being
     end
 
-    {:noreply, {world_pid, being}}
+    {:noreply, {world_pid, being, tref}}
   end
 
-  def handle_cast({:update, type}, {world_pid, being}) do
+  def handle_cast({:update, type}, {world_pid, being, tref}) do
     new_being = %{being | type: type}
-    {:noreply, {world_pid, new_being}}
+    :timer.cancel(tref)
+    new_tref = setup(new_being)
+    {:noreply, {world_pid, new_being, new_tref}}
   end
 
   def handle_call({:read}, _, state) do
