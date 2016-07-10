@@ -10,6 +10,24 @@ defmodule Zmobies.Map do
     %Map{bottom_boundary: bottom_boundary, right_boundary: right_boundary}
   end
 
+  def move(map, old_being, new_being) do
+    case remove(map, old_being) do
+      {:ok, map_with_removal} ->
+        add(map_with_removal, new_being)
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
+  def remove(map, being) do
+    if Enum.any?(map.beings, Being.same_location?(being)) do
+      new_map = %{map | beings: List.delete(map.beings, being)}
+      {:ok, new_map}
+    else
+      {:error, "Could not find being #{being}"}
+    end
+  end
+
   def add(map,being) do
     %{
       right_boundary: right_boundary,
@@ -26,11 +44,11 @@ defmodule Zmobies.Map do
         {:error, "#{being} is out of bounds to the north"}
       being.row_index > bottom_boundary ->
         {:error, "#{being} is out of bounds to the south"}
-      Enum.any?(beings, Being.on_top_of?(being)) ->
+      Enum.any?(beings, Being.same_location?(being)) ->
         {:error, "#{being} is trying to place on an occupied space."}
       true ->
         new_map = %{map | beings: map.beings ++ [being]}
-        {:ok, new_map}
+        {:ok, new_map, being}
     end
   end
 

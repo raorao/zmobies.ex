@@ -6,7 +6,7 @@ defmodule Zmobies.Being do
     %Being{col_index: col_index, row_index: row_index}
   end
 
-  def on_top_of?(being) do
+  def same_location?(being) do
     fn(other) -> being.col_index == other.col_index && being.row_index == other.row_index end
   end
 end
