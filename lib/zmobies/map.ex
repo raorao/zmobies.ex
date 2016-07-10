@@ -1,18 +1,18 @@
-defmodule Zmobies.World do
+defmodule Zmobies.Map do
   defstruct bottom_boundary: 10, right_boundary: 10, beings: []
 
-  def new, do: %Zmobies.World{}
+  def new, do: %Zmobies.Map{}
 
   def new(bottom_boundary, right_boundary) do
-    %Zmobies.World{bottom_boundary: bottom_boundary, right_boundary: right_boundary}
+    %Zmobies.Map{bottom_boundary: bottom_boundary, right_boundary: right_boundary}
   end
 
-  def add(world,being) do
+  def add(map,being) do
     %{
       right_boundary: right_boundary,
       bottom_boundary: bottom_boundary,
       beings: beings
-    } = world
+    } = map
 
     cond do
       being.col_index < 1 ->
@@ -26,26 +26,26 @@ defmodule Zmobies.World do
       Enum.any?(beings, Zmobies.Being.on_top_of?(being)) ->
         {:error, "#{being} is trying to place on an occupied space."}
       true ->
-        new_world = %{world | beings: world.beings ++ [being]}
-        {:ok, new_world}
+        new_map = %{map | beings: map.beings ++ [being]}
+        {:ok, new_map}
     end
   end
 
-  def add(world) do
-    %{right_boundary: right_boundary, bottom_boundary: bottom_boundary} = world
+  def add(map) do
+    %{right_boundary: right_boundary, bottom_boundary: bottom_boundary} = map
 
     being = Zmobies.Being.new(
       col: :random.uniform(right_boundary),
       row: :random.uniform(bottom_boundary)
     )
 
-    add(world, being)
+    add(map, being)
   end
 end
 
-defimpl String.Chars, for: Zmobies.World do
+defimpl String.Chars, for: Zmobies.Map do
   # necessary for IO.puts
-  def to_string(%Zmobies.World{bottom_boundary: bottom_boundary, right_boundary: right_boundary, beings: beings}) do
+  def to_string(%Zmobies.Map{bottom_boundary: bottom_boundary, right_boundary: right_boundary, beings: beings}) do
     1..bottom_boundary
       |> Enum.to_list
       |> Enum.map(fn(row_index) -> print_row(right_boundary, beings, row_index) end)
