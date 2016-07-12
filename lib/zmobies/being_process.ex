@@ -37,12 +37,12 @@ defmodule Zmobies.BeingProcess do
   def init({world_pid, being}) do
     being_with_process = %{being | pid: self}
     tref = BeingProcess.setup(being_with_process)
-    {:ok, {world_pid, being_with_process, tref, 0}}
+    {:ok, {world_pid, being_with_process, tref}}
   end
 
-  def handle_info(:move, {world_pid, old_being, tref, lifetime}) do
+  def handle_info(:move, {world_pid, old_being, tref}) do
 
-    if Being.starved?(old_being, lifetime) do
+    if Being.starved?(old_being) do
       BeingProcess.stop(old_being.pid)
     end
 
@@ -62,25 +62,25 @@ defmodule Zmobies.BeingProcess do
       {:error, _} -> old_being
     end
 
-    {:noreply, {world_pid, being, tref, lifetime + 1}}
+    {:noreply, {world_pid, %{being | lifetime: being.lifetime + 1}, tref}}
   end
 
-  def handle_cast({:stop}, {world_pid, being, tref, _}) do
+  def handle_cast({:stop}, {world_pid, being, tref}) do
     :timer.cancel(tref)
     Zmobies.World.remove(world_pid, being)
     GenServer.stop(being.pid)
-    {:noreply, {world_pid, nil, nil, nil}}
+    {:noreply, {world_pid, nil, nil}}
   end
 
-  def handle_cast({:feed}, {world_pid, being, tref, _}) do
-    {:noreply, {world_pid, being, tref, 0}}
+  def handle_cast({:feed}, {world_pid, being, tref}) do
+    {:noreply, {world_pid, %{being | lifetime: 0}, tref}}
   end
 
-  def handle_cast({:turn}, {world_pid, being, tref, _}) do
-    new_being = %{being | type: :zombie}
+  def handle_cast({:turn}, {world_pid, being, tref}) do
+    new_being = %{being | type: :zombie, lifetime: 0}
     :timer.cancel(tref)
     new_tref = setup(new_being)
-    {:noreply, {world_pid, new_being, new_tref, 0}}
+    {:noreply, {world_pid, new_being, new_tref}}
   end
 
   def handle_call({:read}, _, state) do

@@ -1,9 +1,9 @@
 defmodule Zmobies.Being do
   alias Zmobies.Being, as: Being
-  defstruct row_index: nil, col_index: nil, type: nil, pid: nil
+  defstruct row_index: nil, col_index: nil, type: nil, pid: nil, lifetime: nil
 
   def new(col: col_index, row: row_index, type: type) do
-    %Being{col_index: col_index, row_index: row_index, type: type}
+    %Being{col_index: col_index, row_index: row_index, type: type, lifetime: 0}
   end
 
   def move_randomly(being) do
@@ -83,7 +83,7 @@ defmodule Zmobies.Being do
     sight_distance(being) >= distance_from(being, other)
   end
 
-  def starved?(%Zmobies.Being{type: type}, lifetime) do
+  def starved?(%Zmobies.Being{type: type, lifetime: lifetime}) do
     case type do
       :zombie -> lifetime > 40
       :human -> false
