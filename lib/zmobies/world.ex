@@ -70,21 +70,14 @@ defmodule Zmobies.World do
       {:ok, new_map, _} ->
         {:reply, {:ok, new_being}, new_map}
       {:collision, being, other} ->
-        cond do
-          being.type == other.type ->
+        case Being.food_chain_for(being, other) do
+          {:error, _} ->
             {:reply, {:error, "collision"}, current_map}
 
-          being.type == :human ->
-            {:ok, new_map, _} = Map.update_being(current_map, %{ being | type: :zombie })
-            BeingProcess.feed(other.pid)
-            BeingProcess.turn(being.pid)
-
-            {:reply, {:error, "collision"}, new_map}
-
-          other.type == :human ->
-            {:ok, new_map, _} = Map.update_being(current_map, %{ other | type: :zombie })
-            BeingProcess.feed(being.pid)
-            BeingProcess.turn(other.pid)
+          {:ok, eater, eaten} ->
+            {:ok, new_map, _} = Map.update_being(current_map, %{ eaten | type: :zombie })
+            BeingProcess.feed(eater.pid)
+            BeingProcess.turn(eaten.pid)
 
             {:reply, {:error, "collision"}, new_map}
         end

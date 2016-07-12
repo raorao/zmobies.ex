@@ -60,6 +60,17 @@ defmodule Zmobies.Being do
     end
   end
 
+  def food_chain_for(being, other) do
+    cond do
+      being.type == other.type ->
+        {:error, "cannot feed"}
+      being.type == :zombie ->
+        {:ok, being, other}
+      other.type == :zombie ->
+        {:ok, other, being}
+    end
+  end
+
   def same_location?(being) do
     fn(other) -> being.col_index == other.col_index && being.row_index == other.row_index end
   end
