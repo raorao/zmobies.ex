@@ -5,8 +5,8 @@ defmodule Zmobies.BeingProcess do
 
   use GenServer
 
-  def start({world_pid, being}) do
-    GenServer.start(BeingProcess, {world_pid, being})
+  def start_link({world_pid, being}) do
+    GenServer.start_link(BeingProcess, {world_pid, being})
   end
 
   def read(pid) do

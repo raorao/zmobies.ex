@@ -5,8 +5,8 @@ defmodule Zmobies.World do
   alias Zmobies.BeingProcess, as: BeingProcess
   use GenServer
 
-  def start(dimensions) do
-    GenServer.start(Zmobies.World, dimensions)
+  def start_link(dimensions) do
+    GenServer.start_link(Zmobies.World, dimensions)
   end
 
   def add_zombie(pid) do
@@ -50,7 +50,7 @@ defmodule Zmobies.World do
 
     case add do
       {:ok, map, being} ->
-        {:ok, being_pid} = BeingProcess.start({self,being})
+        {:ok, being_pid} = BeingProcess.start_link({self,being})
         {:ok, map, being} = Map.update_being(map, %{ being | pid: being_pid })
         {:noreply, map}
       {:collision, _, _} ->
