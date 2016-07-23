@@ -1,7 +1,7 @@
 defmodule Zmobies.World do
   alias Zmobies.Map, as: Map
   alias Zmobies.Being, as: Being
-
+  alias Zmobies.BeingSupervisor, as: BeingSupervisor
   alias Zmobies.BeingProcess, as: BeingProcess
   use GenServer
 
@@ -50,7 +50,7 @@ defmodule Zmobies.World do
 
     case add do
       {:ok, map, being} ->
-        {:ok, being_pid} = BeingProcess.start_link({self,being})
+        {:ok, being_pid} = BeingSupervisor.start_child({self,being})
         {:ok, map, being} = Map.update_being(map, %{ being | pid: being_pid })
         {:noreply, map}
       {:collision, _, _} ->

@@ -3,7 +3,8 @@ defmodule Zmobies.Supervisor do
 
   def init(_) do
     children = [
-      worker(Zmobies.Interface, []),
+      worker(Zmobies.Interface, [], restart: :transient),
+      supervisor(Zmobies.BeingSupervisor, [])
     ]
 
     opts = [strategy: :one_for_one]
