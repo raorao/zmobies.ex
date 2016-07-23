@@ -22,7 +22,7 @@ defmodule Zmobies.BeingProcess do
   end
 
   def stop(pid) do
-    GenServer.cast(pid, {:stop})
+    GenServer.stop(pid)
   end
 
   def setup(being) do
@@ -65,10 +65,9 @@ defmodule Zmobies.BeingProcess do
     {:noreply, {world_pid, %{being | lifetime: being.lifetime + 1}, tref}}
   end
 
-  def handle_cast({:stop}, {world_pid, being, tref}) do
+  def terminate(_, {world_pid, being, tref}) do
     :timer.cancel(tref)
     Zmobies.World.remove(world_pid, being)
-    GenServer.stop(being.pid)
     {:noreply, {world_pid, nil, nil}}
   end
 
