@@ -16,11 +16,7 @@ defmodule Zmobies.Interface do
     GenServer.stop(pid)
   end
 
-  def start_link do
-    start_link(humans: 3, zombies: 10, dimensions: 10)
-  end
-
-  def start_link(humans: humans, zombies: zombies, dimensions: dimensions) do
+  def start_link({humans, zombies, dimensions}) do
     GenServer.start_link(Interface, {humans, zombies, dimensions}, name: :interface)
   end
 

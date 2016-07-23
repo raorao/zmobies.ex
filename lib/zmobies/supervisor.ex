@@ -1,13 +1,13 @@
 defmodule Zmobies.Supervisor do
   use Supervisor
 
-  def init(_) do
+  def init(humans: humans, zombies: zombies, dimensions: dimensions) do
     children = [
-      worker(Zmobies.Interface, [], restart: :transient),
-      supervisor(Zmobies.BeingSupervisor, [])
+      supervisor(Zmobies.BeingSupervisor, [], restart: :transient),
+      worker(Zmobies.Interface, [{humans, zombies, dimensions}], restart: :transient),
     ]
 
-    opts = [strategy: :one_for_one]
+    opts = [strategy: :one_for_all]
     Supervisor.start_link(children, opts)
   end
 end
