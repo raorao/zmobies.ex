@@ -4,4 +4,8 @@ defmodule Zmobies do
   def start(humans: humans, zombies: zombies, dimensions: dimensions) do
     Zmobies.Supervisor.init(humans: humans, zombies: zombies, dimensions: dimensions)
   end
+
+  def stop do
+    Supervisor.stop(:zmobies_supervisor)
+  end
 end

@@ -7,7 +7,7 @@ defmodule Zmobies.Supervisor do
       worker(Zmobies.Interface, [{humans, zombies, dimensions}], restart: :transient),
     ]
 
-    opts = [strategy: :one_for_all]
+    opts = [strategy: :one_for_all, name: :zmobies_supervisor]
     Supervisor.start_link(children, opts)
   end
 end
