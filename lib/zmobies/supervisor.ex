@@ -1,7 +1,7 @@
 defmodule Zmobies.Supervisor do
   use Supervisor
 
-  def init(humans: humans, zombies: zombies, dimensions: dimensions) do
+  def init({humans, zombies, dimensions}) do
     children = [
       supervisor(Zmobies.BeingSupervisor, [], restart: :transient),
       worker(Zmobies.Interface, [{humans, zombies, dimensions}], restart: :transient),

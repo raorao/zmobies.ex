@@ -17,6 +17,11 @@ defmodule Zmobies.Mixfile do
     [
       applications: [:logger],
       mod: {Zmobies, []},
+      env: [
+        humans: 450,
+        zombies: 10,
+        dimensions: 40
+      ],
     ]
   end
 
