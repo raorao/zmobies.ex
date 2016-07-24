@@ -39,7 +39,7 @@ defmodule Zmobies.Interface do
 
     if World.stable?(world) do
       IO.puts("world is stable. The #{World.winner(world)} have won.")
-      Interface.stop(self)
+      GenServer.stop(:zmobies_supervisor)
     end
 
     {:noreply, world_pid}

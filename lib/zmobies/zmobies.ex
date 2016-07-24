@@ -1,11 +1,7 @@
 defmodule Zmobies do
-  def start, do: start(humans: 3, zombies: 10, dimensions: 10)
-  def start(humans, zombies), do: start(humans: humans, zombies: zombies, dimensions: 40)
-  def start(humans: humans, zombies: zombies, dimensions: dimensions) do
-    Zmobies.Supervisor.init(humans: humans, zombies: zombies, dimensions: dimensions)
-  end
+  use Application
 
-  def stop do
-    Supervisor.stop(:zmobies_supervisor)
+  def start(_type, _args) do
+    Zmobies.Supervisor.init(humans: 450, zombies: 10, dimensions: 40)
   end
 end
